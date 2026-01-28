@@ -537,6 +537,12 @@ export type CreateDraftOrderPayload = {
   email: string;
   tags: string;
   note: string;
+  appliedDiscount?: {
+    title: string;
+    description?: string;
+    value: number;
+    valueType: "FIXED_AMOUNT" | "PERCENTAGE";
+  };
 };
 
 export type DraftOrderResponse = {
