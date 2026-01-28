@@ -83,12 +83,17 @@ MCP Server for Shopify API, enabling interaction with store data through GraphQL
    * Returns: Created discount details
 
 10. `create-draft-order`
-    * Create a draft order
+    * Create a draft order with optional discount
     * Inputs:
       * `lineItems` (array): Array of items with variantId and quantity
       * `email` (string): Customer email
       * `shippingAddress` (object): Shipping address details
       * `note` (optional string): Optional note for the order
+      * `appliedDiscount` (optional object): Discount to apply to the order
+        * `title` (string): Title/name of the discount
+        * `description` (optional string): Description of the discount
+        * `value` (number): Discount value (percentage as decimal 0-1 or fixed amount)
+        * `valueType` (enum): Type of discount ('FIXED_AMOUNT' or 'PERCENTAGE')
     * Returns: Created draft order details
 
 11. `complete-draft-order`
@@ -157,7 +162,7 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "shopify": {
       "command": "npx",
-      "args": ["-y", "shopify-mcp-server"],
+      "args": ["-y", "github:classicrob/shopify-mcp-server"],
       "env": {
         "SHOPIFY_ACCESS_TOKEN": "<YOUR_ACCESS_TOKEN>",
         "MYSHOPIFY_DOMAIN": "<YOUR_SHOP>.myshopify.com"
