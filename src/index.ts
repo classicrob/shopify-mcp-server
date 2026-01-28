@@ -403,7 +403,7 @@ server.tool(
 // Draft Order Tools
 server.tool(
   "create-draft-order",
-  "Create a draft order",
+  "Create a draft order with optional discount",
   {
     lineItems: z
       .array(
@@ -427,8 +427,17 @@ server.tool(
       })
       .describe("Shipping address details"),
     note: z.string().optional().describe("Optional note for the order"),
+    appliedDiscount: z
+      .object({
+        title: z.string().describe("Title/name of the discount"),
+        description: z.string().optional().describe("Description of the discount"),
+        value: z.number().describe("Discount value (percentage as decimal 0-1 or fixed amount)"),
+        valueType: z.enum(["FIXED_AMOUNT", "PERCENTAGE"]).describe("Type of discount"),
+      })
+      .optional()
+      .describe("Optional discount to apply to the entire order"),
   },
-  async ({ lineItems, email, shippingAddress, note }) => {
+  async ({ lineItems, email, shippingAddress, note, appliedDiscount }) => {
     const client = new ShopifyClient();
     try {
       const draftOrderData: CreateDraftOrderPayload = {
@@ -438,6 +447,7 @@ server.tool(
         billingAddress: shippingAddress, // Using same address for billing
         tags: "draft",
         note: note || "",
+        appliedDiscount,
       };
       const draftOrder = await client.createDraftOrder(
         SHOPIFY_ACCESS_TOKEN,
